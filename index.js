@@ -3,6 +3,8 @@ const bot = new Discord.Client();
 const config = require('./config.json');
 const diceManagement = require('./commands/diceManagement');
 const rmMsg = require('./commands/removeMsg');
+const helpMsg = require('./commands/helpCommand');
+const errorManagement = require('./tools/errorManagement');
 
 /* Bot's lunch */
 bot.once('ready', () => {
@@ -10,8 +12,11 @@ bot.once('ready', () => {
 });
 
 bot.on("message", msg => {
-    if (msg.author.bot) return;
     if (!msg.content.startsWith(config.PREFIX)) return;
+    if (msg.author.bot) {
+        errorManagement.writeErrorMsg(msg, 1);
+        return;
+    }
     console.log(msg.author.discriminator + ' ' + msg.author.username + " ->" + msg.content + "<-");
     
     /* Parsing message*/
@@ -22,10 +27,9 @@ bot.on("message", msg => {
     
     /* Parsing command*/
     if (command === "help" || command === "h") {
-        console.log("BOT write HELP");
-        msg.channel.send("USAGE :\n\t!help or !h : display help.\n\t!dice or !d : d[dice value] (Optional->) x[number of dices]")
+        helpMsg.displayHelp(msg, "FR");
     } else if (command === "dice" || command === "d") {
-        msg.channel.send(diceManagement.dice(args));
+        diceManagement.dice(msg, args);
     } else if (command === "remove" || command === "rm") {
         rmMsg.removeMsg(msg, args);
         
