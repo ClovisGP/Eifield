@@ -12,28 +12,34 @@ bot.once('ready', () => {
 });
 
 bot.on("message", msg => {
-    if (!msg.content.startsWith(config.PREFIX)) return;
-    if (msg.author.bot) {
-        errorManagement.writeErrorMsg(msg, 1);
-        return;
-    }
-    console.log(msg.author.discriminator + ' ' + msg.author.username + " ->" + msg.content + "<-");
-    
-    /* Parsing message*/
-    const commandBody = msg.content.slice(config.PREFIX.length);
-    const args = commandBody.split(' ');
-    const command = args.shift().toLowerCase();
-    
-    
-    /* Parsing command*/
-    if (command === "help" || command === "h") {
-        helpMsg.displayHelp(msg, "FR");
-    } else if (command === "dice" || command === "d") {
-        diceManagement.dice(msg, args);
-    } else if (command === "remove" || command === "rm") {
-        rmMsg.removeMsg(msg, args);
+    try {
+        if (!msg.content.startsWith(config.PREFIX)) return;
+        if (msg.author.bot) {
+            errorManagement.writeErrorMsg(msg, 1);
+            return 1;
+        }
+        console.log(msg.author.discriminator + ' ' + msg.author.username + " ->" + msg.content + "<-");
         
+        /* Parsing message*/
+        const commandBody = msg.content.slice(config.PREFIX.length);
+        const args = commandBody.split(' ');
+        const command = args.shift().toLowerCase();
+        
+        
+        /* Parsing command*/
+        if (command === "help" || command === "h") {
+            helpMsg.displayHelp(msg, "FR");
+        } else if (command === "dice" || command === "d") {
+            diceManagement.dice(msg, args);
+        } else if (command === "remove" || command === "rm") {
+            rmMsg.removeMsg(msg, args);
+        }
     }
+    catch(err) {
+        errorManagement.writeErrorMsg(msg, 11);
+        return 11;
+    }
+    return 0;
 })
 bot.on('error', console.error);
 bot.login(config.BOT_TOKEN);

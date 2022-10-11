@@ -2,89 +2,95 @@ const errorManagement = require('./../tools/errorManagement');
 
 module.exports = {
     removeMsg: function(msg, args) {
-        if (!msg.author.discriminator === "3833") {
-            errorManagement.writeErrorMsg(msg, 4);
-            return 4;
+        try {
+            if (!msg.author.discriminator === "3833") {
+                errorManagement.writeErrorMsg(msg, 4);
+                return 4;
+            }
+            if (args[0] === "napalm") {
+                if (!isNaN(args[1])) {
+                    if ((Number(args[1]) + 1) > 21 || (Number(args[1]) + 1) < 1) {
+                        errorManagement.writeErrorMsg(msg, 10);
+                        return 10;
+                    }
+                    msg.channel.bulkDelete(Number(args[1]) + 1)
+                    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+                    .catch(console.error, errorManagement.writeErrorMsg(msg, 9)
+                    );
+                } else {
+                    msg.channel.bulkDelete(6)
+                    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+                    .catch(console.error, errorManagement.writeErrorMsg(msg, 9));
+                }
+            }
+            if (args[0] === "tactical-strike") {
+                let listArg = [];
+                for (index in args) {
+                    let argParse = args[index].split('_');
+                    if (argParse[0] === "end") {
+                        if (!Date.parse(argParse[1])) {
+                            errorManagement.writeErrorMsg(msg, 5);
+                            return 5;
+                        }
+                        listArg["end"] = (new Date(argParse[1]).getTime())
+                    } else if (argParse[0] === "begin") {
+                        if (!Date.parse(argParse[1])) {
+                            errorManagement.writeErrorMsg(msg, 6);
+                            return 6;
+                        }
+                        listArg["begin"] = (new Date(argParse[1]).getTime())
+                    } else if (argParse[0] === "name") {
+                        listArg["name"] = argParse[1];
+                    }
+                }
+                if (!("begin" in listArg)) {
+                    errorManagement.writeErrorMsg(msg, 7);
+                    return 7;
+                }
+                if (!("end" in listArg)) {
+                    if (listArg["begin"] >= listArg["end"]) {
+                        errorManagement.writeErrorMsg(msg, 8);
+                        return 8;
+                    }
+                }
+                if ("name" in listArg) {
+                    msg.channel.messages.fetch({ limit: 100 }).then(messages => {
+                        if ("end" in listArg) {
+                            messages.forEach(function (currentMsg) {
+                                if (currentMsg.createdTimestamp >= listArg["begin"] && currentMsg.createdTimestamp <= listArg["end"] && listArg["name"] === msg.author.username) {
+                                    currentMsg.delete();
+                                }
+                            })
+                        } else {
+                            messages.forEach(function (currentMsg) {
+                                if (currentMsg.createdTimestamp >= listArg["begin"] && listArg["name"] === msg.author.username) {
+                                    currentMsg.delete();
+                                }
+                            })
+                        }
+                    });
+                } else {
+                    msg.channel.messages.fetch({ limit: 100 }).then(messages => {
+                        if ("end" in listArg) {
+                            messages.forEach(function (currentMsg) {
+                                if (currentMsg.createdTimestamp >= listArg["begin"] && currentMsg.createdTimestamp <= listArg["end"]) {
+                                    currentMsg.delete();
+                                }
+                            })
+                        } else {
+                            messages.forEach(function (currentMsg) {
+                                if (currentMsg.createdTimestamp >= listArg["begin"]) {
+                                    currentMsg.delete();
+                                }
+                            })
+                        }
+                    });
+                }
+            }
         }
-        if (args[0] === "napalm") {
-            if (!isNaN(args[1])) {
-                if ((Number(args[1]) + 1) > 21 || (Number(args[1]) + 1) < 1) {
-                    errorManagement.writeErrorMsg(msg, 10);
-                    return 10;
-                }
-                msg.channel.bulkDelete(Number(args[1]) + 1)
-                .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
-                .catch(console.error, errorManagement.writeErrorMsg(msg, 9)
-                );
-            } else {
-                msg.channel.bulkDelete(6)
-                .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
-                .catch(console.error, errorManagement.writeErrorMsg(msg, 9));
-            }
-        }
-        if (args[0] === "tactical-strike") {
-            let listArg = [];
-            for (index in args) {
-                let argParse = args[index].split('_');
-                if (argParse[0] === "end") {
-                    if (!Date.parse(argParse[1])) {
-                        errorManagement.writeErrorMsg(msg, 5);
-                        return 5;
-                    }
-                    listArg["end"] = (new Date(argParse[1]).getTime())
-                } else if (argParse[0] === "begin") {
-                    if (!Date.parse(argParse[1])) {
-                        errorManagement.writeErrorMsg(msg, 6);
-                        return 6;
-                    }
-                    listArg["begin"] = (new Date(argParse[1]).getTime())
-                } else if (argParse[0] === "name") {
-                    listArg["name"] = argParse[1];
-                }
-            }
-            if (!("begin" in listArg)) {
-                errorManagement.writeErrorMsg(msg, 7);
-                return 7;
-            }
-            if (!("end" in listArg)) {
-                if (listArg["begin"] >= listArg["end"]) {
-                    errorManagement.writeErrorMsg(msg, 8);
-                    return 8;
-                }
-            }
-            if ("name" in listArg) {
-                msg.channel.messages.fetch({ limit: 100 }).then(messages => {
-                    if ("end" in listArg) {
-                        messages.forEach(function (currentMsg) {
-                            if (currentMsg.createdTimestamp >= listArg["begin"] && currentMsg.createdTimestamp <= listArg["end"] && listArg["name"] === msg.author.username) {
-                                currentMsg.delete();
-                            }
-                        })
-                    } else {
-                        messages.forEach(function (currentMsg) {
-                            if (currentMsg.createdTimestamp >= listArg["begin"] && listArg["name"] === msg.author.username) {
-                                currentMsg.delete();
-                            }
-                        })
-                    }
-                });
-            } else {
-                msg.channel.messages.fetch({ limit: 100 }).then(messages => {
-                    if ("end" in listArg) {
-                        messages.forEach(function (currentMsg) {
-                            if (currentMsg.createdTimestamp >= listArg["begin"] && currentMsg.createdTimestamp <= listArg["end"]) {
-                                currentMsg.delete();
-                            }
-                        })
-                    } else {
-                        messages.forEach(function (currentMsg) {
-                            if (currentMsg.createdTimestamp >= listArg["begin"]) {
-                                currentMsg.delete();
-                            }
-                        })
-                    }
-                });
-            }
+        catch(err) {
+            errorManagement.writeErrorMsg(msg, 11);
+            return 11;
         }
     },
     writeHelp: function(language) {

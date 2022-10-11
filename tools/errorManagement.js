@@ -8,7 +8,8 @@ const ErrorDescription = {
     7: "Erreur : L'option tactical-strike nécessite l'argument begin.",
     8: "Erreur : La date **end** ne doit pas être plus récente ou la même que **begin**.",
     9: "Erreur : Une erreur s'est produite lors de la suppression d'un message, celà peut se produire si le message est vieux.",
-    10: "Erreur : Le nombre de message doit être compris entre 0 et 20, le message de la commande n'est pas compter dans ce chiffre..",
+    10: "Erreur : Le nombre de message doit être compris entre 0 et 20, le message de la commande n'est pas compter dans ce chiffre.",
+    11: "Erreur : Une erreur interne s'est produite.",
 }
 
 module.exports = {

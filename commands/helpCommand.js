@@ -13,10 +13,17 @@ function writeHelp(language) {
 module.exports = {
     writeHelp,
     displayHelp: function(msg, language) {
-        if (language === "FR") {
-            msg.channel.send("```Liste des commandes :\r" + writeHelp("FR") + diceManagement.writeHelp("FR") + rmMsg.writeHelp("FR") + "```");
-            return;
+        try {
+            if (language === "FR") {
+                msg.channel.send("```Liste des commandes :\r" + writeHelp("FR") + diceManagement.writeHelp("FR") + rmMsg.writeHelp("FR") + "```");
+                return 0;
+            }
+            msg.channel.send("```List of commands :\r" + writeHelp("ENG") + diceManagement.writeHelp("ENG") + rmMsg.writeHelp("ENG") + "```");
+            return 0;
         }
-        msg.channel.send("```List of commands :\r" + writeHelp("ENG") + diceManagement.writeHelp("ENG") + rmMsg.writeHelp("ENG") + "```");
+        catch(err) {
+            errorManagement.writeErrorMsg(msg, 11);
+            return 11;
+        }
     },
 };
