@@ -1,10 +1,6 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
-const diceManagement = require('./commands/diceManagement');
-const rmMsg = require('./commands/removeMsg');
-const helpMsg = require('./commands/helpCommand');
-const musicManagement = require('./commands/musicManagement');
-const errorManagement = require('./tools/errorManagement');
+const { REST } = require('@discordjs/rest');
 
 const bot = new Discord.Client({
     intents: [
@@ -16,10 +12,27 @@ const bot = new Discord.Client({
     }
 );
 
-bot.api.applications(bot.user.id).guilds('guild id').commands.post({data: {
-    name: 'ping',
-    description: 'ping pong!'
-}})
+bot.commands = new Discord.Collection();
+
+const fs = require('node:fs');
+const path = require('node:path');
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+const commands = [];
+
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+    bot.commands.set(command.data.name, command);
+	commands.push(command.data);
+}
+
+const rest = new REST({ version: '10' }).setToken(config.token);
+
+rest.put(Discord.Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
+	.then(() => console.log('Successfully registered application commands.'))
+	.catch(console.error)
 
 /* Bot's lunch */
 bot.once('ready', async () => {
@@ -33,70 +46,29 @@ bot.once('disconnect', () => {
 });
 
 bot.on("messageCreate", async msg => {
-    try {
-        if (!msg.content.startsWith(config.PREFIX)) return;
-        if (msg.author.bot) {
-            errorManagement.writeErrorMsg(msg, 1);
-            return 1;
-        }
-        console.log(msg.author.discriminator + ' ' + msg.author.username + " ->" + msg.content + "<-");
-        
-        /* Parsing message*/
-        const commandBody = msg.content.slice(config.PREFIX.length);
-        const args = commandBody.split(' ');
-        const command = args.shift().toLowerCase();
-        
-        
-        /* Parsing command*/
-        if (command === "help" || command === "h") {
-            helpMsg.displayHelp(msg, "FR");
-        } else if (command === "dice" || command === "d") {
-            diceManagement.dice(msg, args);
-        } else if (command === "remove" || command === "rm") {
-            rmMsg.removeMsg(msg, args);
-        }
-
-
-        /**
-         * Debut Player
-         */
-
-        // const serverQueue = musicManagement.queue.get(msg.guild.id);
-
-        // if (command === 'play') {
-        //     musicManagement.execute(msg, serverQueue);
-        // return;
-        // } else if (command === 'skip') {
-        //     musicManagement.skip(msg, serverQueue);
-        // return;
-        // } else if (command === 'stop') {
-        //     musicManagement.stop(msg, serverQueue);
-        // return;
-        // } else {
-        //     msg.channel.send('You need to enter a valid command!')
-        // }
-        /**
-         * Fin Player
-         */
-
-    }
-    catch(err) {
-        errorManagement.writeErrorMsg(msg, 11);
-        console.log(err)
-        return 11;
-    }
-    return 0;
 })
 
 
-client.on('interactionCreate', interaction => {
-	console.log(interaction);
+bot.on('interactionCreate', async interaction => {
+    console.log("passage");
+	if (!interaction.isChatInputCommand()) return;
+
+	const command = bot.commands.get(interaction.commandName);
+
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
 });
 
 
 
 bot.on('error', console.error);
-bot.login(config.BOT_TOKEN);
+bot.login(config.token);
 
 /*
 const { Client, GuildMember, GatewayIntentBits  } = require("discord.js");
@@ -203,37 +175,5 @@ client.on("interactionCreate", async (interaction) => {
             metadata: interaction.channel
         });
 
-        try {
-            if (!queue.connection) await queue.connect(interaction.member.channel);
-        } catch {
-            void player.deleteQueue(interaction.guildId);
-            return void interaction.followUp({ content: "Could not join your voice channel!" });
-        }
-
-        await interaction.followUp({ content: `⏱ | Loading your ${searchResult.playlist ? "playlist" : "track"}...` });
-        searchResult.playlist ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
-        if (!queue.playing) await queue.play();
-    } else if (interaction.commandName === "skip") {
-        await interaction.deferReply();
-        const queue = player.getQueue(interaction.guildId);
-        if (!queue || !queue.playing) return void interaction.followUp({ content: "❌ | No music is being played!" });
-        const currentTrack = queue.current;
-        const success = queue.skip();
-        return void interaction.followUp({
-            content: success ? `✅ | Skipped **${currentTrack}**!` : "❌ | Something went wrong!"
-        });
-    } else if (interaction.commandName === "stop") {
-        await interaction.deferReply();
-        const queue = player.getQueue(interaction.guildId);
-        if (!queue || !queue.playing) return void interaction.followUp({ content: "❌ | No music is being played!" });
-        queue.destroy();
-        return void interaction.followUp({ content: "🛑 | Stopped the player!" });
-    } else {
-        interaction.reply({
-            content: "Unknown command!",
-            ephemeral: true
-        });
-    }
-});
 
 client.login(config.BOT_TOKEN);*/

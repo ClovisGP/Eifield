@@ -1,58 +1,44 @@
 const errorManagement = require('./../tools/errorManagement');
 
 module.exports = {
-    dice: function(msg, args) {
-        try {
-            if (!args[0]) {
-                errorManagement.writeErrorMsg(msg, 2);
-                return 2;
-            }
-            if (!args[0].startsWith('d')) {
-                errorManagement.writeErrorMsg(msg, 2);
-                return 2;
-            }
-
-            let diceValue = parseInt(args[0].slice(1), 10);
-            let result = args[0] + " dice: " + (Math.floor(Math.random() * diceValue) + 1);
-
-            if (args[1]) {
-                if (args[1].startsWith('x')) {
-                    let diceNb = parseInt(args[1].slice(1), 10);
-                    if (diceNb < 1 || diceNb > 40) {
-                        errorManagement.writeErrorMsg(msg, 3);
-                        return 3;
-                    }
-                    for (let i = 2; i <= diceNb; i++) {
-                        result =  result + "\t|\t" + args[0] + " dice: ";
-                        result =  result + (Math.floor(Math.random() * diceValue) + 1);
-                    }
-                } else {
-                    errorManagement.writeErrorMsg(msg, 2);
-                    return 2;
+    data: {
+        name: "dice",
+		description : "!dice or !d :\r",
+        type: 1,
+        options: [
+            {
+                name: "value",
+                type: 4,
+		        description : "It is the dice value",
+                required: true,
+                min_value: 2,
+            },
+            {
+                name: "number",
+                type: 4,
+		        description : "It is the dice number",
+                required: false,
+                min_value: 1,
+                max_value: 50,
+            },
+        ],
+    },
+    execute: async function(interaction) {
+       try {
+            let result = " dice of " + interaction.options.get("value").value + " : " + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
+            
+            if (interaction.options.get("number")) {
+                for (let i = 2; i <= interaction.options.get("number").value; i++) {
+                    result =  result + "\t|\t" + " dice: " + interaction.options.get("value").value + " : ";
+                    result =  result + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
                 }
             }
-            msg.channel.send(result);
+            interaction.reply(result);
             return 0;
         }
         catch(err) {
-            errorManagement.writeErrorMsg(msg, 11);
-            return 11;
+            errorManagement.writeErrorMsg(interaction, 1, err);
+            return 1;
         }
     },
-    writeHelp: function(langage) {
-        if (langage === "FR") {
-            return "!dice or !d :\r\
-            **ARGUMENTS** ->\r\
-                \t**d** : La valeur des dés\r\
-                        \t\tExemple : !dice d20\r\
-                \t**x** : *-Optionnel-* Le nombre de dés lancés\r\
-                        \t\t!dice d20 x2\r\r";
-        }
-        return "!dice or !d :\r\
-            **ARGUMENTS** ->\r\
-                \t**d** : The dice value\r\
-                        \t\tExample : !dice d20\r\
-                \t**x** : *-Optional-* The number of dice\r\
-                        \t\tExample : !dice d20 x2\r\r";
-    }
 };

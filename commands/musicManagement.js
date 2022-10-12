@@ -1,5 +1,6 @@
 const ytdl = require("ytdl-core");
 
+//entièrement à refaire
 const queue = new Map();
 
 async function execute(message, serverQueue) {
@@ -95,6 +96,10 @@ function play(guild, song) {
 }
 
 module.exports = {
+  data: {
+    name: "music",
+description : "!dice or !d :\r",
+},
     execute,
     skip,
     stop,

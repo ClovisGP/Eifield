@@ -1,7 +1,11 @@
 const errorManagement = require('./../tools/errorManagement');
 
 module.exports = {
-    removeMsg: function(msg, args) {
+    data: {
+        name: "remove",
+		description : "!dice or !d :\r",
+    },
+    execute: function(msg, args) {
         try {
             if (!msg.author.discriminator === "3833") {
                 errorManagement.writeErrorMsg(msg, 4);
