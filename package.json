@@ -10,9 +10,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "^0.8.0",
     "axios": "^0.27.2",
-    "discord.js": "^12.5.3",
+    "discord-player": "^5.3.2",
+    "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
-    "flatmap": "^0.0.3"
+    "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^5.1.0",
+    "flatmap": "^0.0.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "ytdl": "^1.4.1",
+    "ytdl-core": "^4.11.2"
   }
 }
