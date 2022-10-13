@@ -2,24 +2,24 @@ const errorManagement = require('./../tools/errorManagement');
 
 module.exports = {
     data: {
-        name: "dice",
-		description : "!dice or !d :\r",
-        type: 1,
-        options: [
+        "name": "dice",
+		"description" : "!dice or !d :\r",
+        "type": 1,
+        "options": [
             {
-                name: "value",
-                type: 4,
-		        description : "It is the dice value",
-                required: true,
-                min_value: 2,
+                "name": "value",
+                "type": 4,
+		        "description" : "It is the dice value",
+                "required": true,
+                "min_value": 2,
             },
             {
-                name: "number",
-                type: 4,
-		        description : "It is the dice number",
-                required: false,
-                min_value: 1,
-                max_value: 50,
+                "name": "number",
+                "type": 4,
+		        "description" : "It is the dice number",
+                "required": false,
+                "min_value": 1,
+                "max_value": 50,
             },
         ],
     },
