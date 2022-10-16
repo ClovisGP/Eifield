@@ -8,6 +8,7 @@ const bot = new Discord.Client({
 		Discord.GatewayIntentBits.GuildMessages,
 		Discord.GatewayIntentBits.MessageContent,
 		Discord.GatewayIntentBits.GuildMembers,
+        Discord.GatewayIntentBits.GuildVoiceStates,
     ]
     }
 );
@@ -28,11 +29,46 @@ for (const file of commandFiles) {
 	commands.push(command.data);
 }
 
+
+const {Player} = require('discord-player');
 const rest = new REST({ version: '10' }).setToken(config.token);
 
 rest.put(Discord.Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
 	.then(() => console.log('Successfully registered application commands.'))
 	.catch(console.error)
+
+
+    const player = new Player(bot);
+
+player.on('error', (queue, error) => {
+  console.log(`[${queue.guild.name}] Error emitted from the queue: ${error.message}`);
+});
+
+player.on('connectionError', (queue, error) => {
+  console.log(`[${queue.guild.name}] Error emitted from the connection: ${error.message}`);
+});
+
+player.on('trackStart', (queue, track) => {
+  queue.metadata.send(`▶ | Started playing: **${track.title}** in **${queue.connection.channel.name}**!`);
+});
+
+player.on('trackAdd', (queue, track) => {
+  queue.metadata.send(`🎶 | Track **${track.title}** queued!`);
+});
+
+player.on('botDisconnect', queue => {
+  queue.metadata.send('❌ | I was manually disconnected from the voice channel, clearing queue!');
+});
+
+player.on('channelEmpty', queue => {
+  queue.metadata.send('❌ | Nobody is in the voice channel, leaving...');
+});
+
+player.on('queueEnd', queue => {
+  queue.metadata.send('✅ | Queue finished!');
+});
+
+
 
 /* Bot's lunch */
 bot.once('ready', async () => {
@@ -58,7 +94,10 @@ bot.on('interactionCreate', async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction);
+        if (interaction.commandName === "play")
+            command.execute(interaction, player);
+        else
+		    command.execute(interaction);
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
