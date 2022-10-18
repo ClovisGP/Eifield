@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const { REST } = require('@discordjs/rest');
 
+
+//clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr
 const bot = new Discord.Client({
     intents: [
         Discord.GatewayIntentBits.Guilds,
@@ -19,19 +21,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const {Player} = require('discord-player');
+const rest = new REST({ version: '10' }).setToken(config.token);
 
 const commands = [];
+const musicCommandsList = []
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);
 	const command = require(filePath);
     bot.commands.set(command.data.name, command);
 	commands.push(command.data);
+    if (file.includes("Music"))
+        musicCommandsList.push(command.data.name)
 }
 
 
-const {Player} = require('discord-player');
-const rest = new REST({ version: '10' }).setToken(config.token);
 
 rest.put(Discord.Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
 	.then(() => console.log('Successfully registered application commands.'))
@@ -94,7 +99,7 @@ bot.on('interactionCreate', async interaction => {
 	if (!command) return;
 
 	try {
-        if (interaction.commandName === "play")
+        if (musicCommandsList.includes(interaction.commandName))
             command.execute(interaction, player);
         else
 		    command.execute(interaction);

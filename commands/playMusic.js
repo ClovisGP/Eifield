@@ -4,12 +4,12 @@ const {QueryType} = require('discord-player');
 module.exports = {
   data: {
   "name": "play",
-  "description": 'Play a song in your channel!',
+  "description": 'Play a song in your current voice channel',
   "options": [
     {
-      "name": 'query',
+      "name": 'url',
       "type": ApplicationCommandOptionType.String,
-      "description": 'The song you want to play',
+      "description": 'The url of the song you want to play',
       "required": true,
     },
   ],
@@ -18,7 +18,7 @@ module.exports = {
     try {
       if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
         return void interaction.reply({
-          content: 'You are not in a voice channel!',
+          content: 'You are not in a voice channel',
           ephemeral: true,
         });
       }
@@ -35,9 +35,9 @@ module.exports = {
 
       await interaction.deferReply();
 
-      const query = interaction.options.getString('query');
+      const url = interaction.options.getString('url');
       const searchResult = await player
-        .search(query, {
+        .search(url, {
           requestedBy: interaction.user,
           searchEngine: QueryType.AUTO,
         })
