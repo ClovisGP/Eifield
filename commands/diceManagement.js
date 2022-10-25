@@ -1,4 +1,5 @@
 const errorManagement = require('./../tools/errorManagement');
+const RSVPManagement = require('./../tools/responseManagement');
 
 module.exports = {
     data: {
@@ -24,7 +25,8 @@ module.exports = {
         ],
     },
     execute: async function(interaction) {
-       try {
+       try {//make the translation
+            interaction.deferReply();
             let result = " dice of " + interaction.options.get("value").value + " : " + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
             
             if (interaction.options.get("number")) {
@@ -33,7 +35,7 @@ module.exports = {
                     result =  result + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
                 }
             }
-            interaction.reply(result);
+            RSVPManagement.RSVPCustom(result)
             return 0;
         }
         catch(err) {

@@ -1,4 +1,5 @@
 const errorManagement = require('./../tools/errorManagement');
+const RSVPManagement = require('./../tools/responseManagement');
 
 module.exports = {
     data: {
@@ -22,20 +23,19 @@ module.exports = {
                 errorManagement.writeErrorMsg(msg, 3);
                 return 3;
             }
+            interaction.deferReply();
             if (interaction.options.get("number")) {
                 interaction.channel.bulkDelete(interaction.options.get("number").value)
                 .then(async messages => {
                     console.log(`Bulk deleted ${messages.size} messages`);
-                    await interaction.reply("Messages removed");
-                    setTimeout(() => interaction.deleteReply(), 10000);
+                    RSVPManagement.RSVP(interaction, 1, 0);
                 })
                 .catch(error => { errorManagement.writeErrorMsg(interaction, 2, error)});
             } else {
                 interaction.channel.bulkDelete(5)
                 .then(async messages => {
                     console.log(`Bulk deleted ${messages.size} messages`);
-                    await interaction.reply("Messages removed");
-                    setTimeout(() => interaction.deleteReply(), 10000);
+                    RSVPManagement.RSVP(interaction, 1, 0);
                 })
                 .catch(error => { errorManagement.writeErrorMsg(interaction, 2, error)});
             }

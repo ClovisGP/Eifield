@@ -1,4 +1,5 @@
 const errorManagement = require('./../tools/errorManagement');
+const RSVPManagement = require('./../tools/responseManagement');
 
 module.exports = {
     data: {
@@ -36,6 +37,7 @@ module.exports = {
             //     errorManagement.writeErrorMsg(msg, 4);
             //     return 4;
             // }
+            interaction.deferReply();
             let listArg = [];
             if (interaction.options.get("begin")) {
                 if (!Date.parse(interaction.options.get("begin").value)) {
@@ -60,8 +62,6 @@ module.exports = {
                     return 8;
                 }
             }
-            await interaction.reply("Execeution in progress");
-            setTimeout(() => interaction.deleteReply(), 10000);
             if (interaction.options.get("name")) {
                 interaction.channel.messages.fetch({ limit: 100 }).then(messages => {
                     if ("end" in listArg) {
@@ -95,6 +95,7 @@ module.exports = {
                     }
                 });
             }
+            RSVPManagement.RSVP(interaction, 1, 0);
         }
         catch(err) {
             errorManagement.writeErrorMsg(interaction, 1, err);
