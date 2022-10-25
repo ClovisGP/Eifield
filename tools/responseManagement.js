@@ -1,13 +1,13 @@
 const ENG = {
     1: "Messages removed.",
     2: "Dice of ",
-    3: "Error: you don't have access to this command.",
+    3: "⏸ | Paused",
 }
 
 const FR = {
     1: "Les messages ont été supprimé.",
     2: "Dés de ",
-    3: "Error: you don't have access to this command.",
+    3: "⏸ | Pause",
 }
 
 module.exports = {

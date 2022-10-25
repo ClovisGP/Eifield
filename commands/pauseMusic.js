@@ -1,37 +1,21 @@
-const {GuildMember} = require('discord.js');
+const errorManagement = require('./../tools/errorManagement');
+const RSVPManagement = require('./../tools/responseManagement');
 
 module.exports = {
     data: {
-  "name": 'pause',
-  "description": 'Pause current song!',
+      "name": 'pause',
+      "description": 'Pause current song.',
 },
   async execute(interaction, player) {
-    if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-      return void interaction.reply({
-        content: 'You are not in a voice channel!',
-        ephemeral: true,
-      });
-    }
-
-    if (
-      interaction.guild.members.me.voice.channelId &&
-      interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId
-    ) {
-      return void interaction.reply({
-        content: 'You are not in my voice channel!',
-        ephemeral: true,
-      });
-    }
-
+    if (errorManagement.checkVoiceChannelValidity(interaction) != 0)
+      return;
     await interaction.deferReply();
     const queue = player.getQueue(interaction.guildId);
     if (!queue || !queue.playing)
-      return void interaction.followUp({
-        content: '❌ | No music is being played!',
-      });
+      return void errorManagement.writeErrorMsg(interaction, 6, "", true);
     const success = queue.setPaused(true);
-    return void interaction.followUp({
-      content: success ? '⏸ | Paused!' : '❌ | Something went wrong!',
-    });
+    if (!success)
+      return void errorManagement.writeErrorMsg(interaction, 6, "", true);
+    return void RSVPManagement(interaction, 3, 2)
   },
 };

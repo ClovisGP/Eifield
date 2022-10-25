@@ -1,5 +1,7 @@
 const {GuildMember, ApplicationCommandOptionType } = require('discord.js');
 const {QueryType} = require('discord-player');
+const errorManagement = require('./../tools/errorManagement');
+const RSVPManagement = require('./../tools/responseManagement');
 
 module.exports = {
   data: {
@@ -16,25 +18,10 @@ module.exports = {
   },
   async execute(interaction, player) {
     try {
-      if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-        return void interaction.reply({
-          content: 'You are not in a voice channel',
-          ephemeral: true,
-        });
-      }
-
-      if (
-        interaction.guild.members.me.voice.channelId &&
-        interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId
-      ) {
-        return void interaction.reply({
-          content: 'You are not in my voice channel!',
-          ephemeral: true,
-        });
-      }
+      if (errorManagement.checkVoiceChannelValidity(interaction) != 0)
+        return;
 
       await interaction.deferReply();
-
       const url = interaction.options.getString('url');
       const searchResult = await player
         .search(url, {

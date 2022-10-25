@@ -8,9 +8,9 @@ const {Player} = require('discord-player');
 const bot = new Discord.Client({
     intents: [
         Discord.GatewayIntentBits.Guilds,
-      Discord.GatewayIntentBits.GuildMessages,
-      Discord.GatewayIntentBits.MessageContent,
-      Discord.GatewayIntentBits.GuildMembers,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.MessageContent,
+        Discord.GatewayIntentBits.GuildMembers,
         Discord.GatewayIntentBits.GuildVoiceStates,
     ]
     }

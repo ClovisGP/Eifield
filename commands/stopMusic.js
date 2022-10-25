@@ -1,4 +1,4 @@
-const {GuildMember} = require('discord.js');
+const errorManagement = require('./../tools/errorManagement');
 
 module.exports = {
     data: {
@@ -6,22 +6,8 @@ module.exports = {
   "description": 'Stop all songs in the queue!',
     },
   async execute(interaction, player) {
-    if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-      return void interaction.reply({
-        content: 'You are not in a voice channel!',
-        ephemeral: true,
-      });
-    }
-
-    if (
-      interaction.guild.members.me.voice.channelId &&
-      interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId
-    ) {
-      return void interaction.reply({
-        content: 'You are not in my voice channel!',
-        ephemeral: true,
-      });
-    }
+    if (errorManagement.checkVoiceChannelValidity(interaction) != 0)
+        return;
 
     await interaction.deferReply();
     const queue = player.getQueue(interaction.guildId);
