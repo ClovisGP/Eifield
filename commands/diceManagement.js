@@ -25,17 +25,17 @@ module.exports = {
         ],
     },
     execute: async function(interaction) {
-       try {//make the translation
-            interaction.deferReply();
-            let result = " dice of " + interaction.options.get("value").value + " : " + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
+       try {
+            await interaction.deferReply();
+            let result = "" + interaction.options.get("value").value + " : " + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
             
             if (interaction.options.get("number")) {
                 for (let i = 2; i <= interaction.options.get("number").value; i++) {
-                    result =  result + "\t|\t" + " dice: " + interaction.options.get("value").value + " : ";
+                    result =  result + " \t|\t " + interaction.options.get("value").value + " : ";
                     result =  result + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
                 }
             }
-            RSVPManagement.RSVPCustom(result)
+            RSVPManagement.RSVP(interaction, 2, 1, result);
             return 0;
         }
         catch(err) {

@@ -5,7 +5,7 @@ const ErrorDescription = {
 }
 
 module.exports = {
-    writeErrorMsg: async function(interaction, codeError, errorLog = "No Log") {
+    writeErrorMsg: async function(interaction, codeError, errorLog = "No Log") { //Beware if we have a replydefer
         await interaction.reply(ErrorDescription[codeError]);
         setTimeout(() => interaction.deleteReply(), 30000);
         console.log("ERROR : " + codeError + " - " + ErrorDescription[codeError] + "\r" + errorLog)

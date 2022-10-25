@@ -1,5 +1,6 @@
 const errorManagement = require('./../tools/errorManagement');
 const RSVPManagement = require('./../tools/responseManagement');
+const permManagement = require('./../tools/permissionManagement');
 
 module.exports = {
     data: {
@@ -17,13 +18,10 @@ module.exports = {
             },
         ]
     },
-    execute: async function(interaction) {//////////refaire les droits
+    execute: async function(interaction) {
         try {
-            if (interaction.author.discriminator !== "3833") {
-                errorManagement.writeErrorMsg(msg, 3);
-                return 3;
-            }
-            interaction.deferReply();
+            if (!permManagement.checkRole(interaction, "EifieldController")) return 3;
+            //await interaction.deferReply(); // if we enable it we can't reply, but it refuse to editReply because "don't have reply"
             if (interaction.options.get("number")) {
                 interaction.channel.bulkDelete(interaction.options.get("number").value)
                 .then(async messages => {

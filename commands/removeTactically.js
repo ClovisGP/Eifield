@@ -1,5 +1,6 @@
 const errorManagement = require('./../tools/errorManagement');
 const RSVPManagement = require('./../tools/responseManagement');
+const permManagement = require('./../tools/permissionManagement');
 
 module.exports = {
     data: {
@@ -31,13 +32,10 @@ module.exports = {
             },
         ]
     },
-    execute: async function(interaction) { ///finir, attention à prevenir l'user quand il a fini l'execution mais pas avec reply ou alors trouvé un moyen pour pas que ca mettent que ca reponds plus
+    execute: async function(interaction) {
         try {
-            // if (!msg.author.discriminator === "3833") {
-            //     errorManagement.writeErrorMsg(msg, 4);
-            //     return 4;
-            // }
-            interaction.deferReply();
+            if (!permManagement.checkRole(interaction, "EifieldController")) return 3;
+            await interaction.deferReply();
             let listArg = [];
             if (interaction.options.get("begin")) {
                 if (!Date.parse(interaction.options.get("begin").value)) {
@@ -95,7 +93,7 @@ module.exports = {
                     }
                 });
             }
-            RSVPManagement.RSVP(interaction, 1, 0);
+            RSVPManagement.RSVP(interaction, 1, 1);
         }
         catch(err) {
             errorManagement.writeErrorMsg(interaction, 1, err);
