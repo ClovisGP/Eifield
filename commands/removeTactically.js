@@ -1,5 +1,5 @@
 const errorManagement = require('./../tools/errorManagement');
-const RSVPManagement = require('./../tools/responseManagement');
+const { RSVP } = require('./../tools/responseManagement');
 const permManagement = require('./../tools/permissionManagement');
 
 module.exports = {
@@ -93,7 +93,7 @@ module.exports = {
                     }
                 });
             }
-            RSVPManagement.RSVP(interaction, 1, 1);
+            RSVP(interaction, "messageRemoved", 1);
         }
         catch(err) {
             errorManagement.writeErrorMsg(interaction, 1, err);

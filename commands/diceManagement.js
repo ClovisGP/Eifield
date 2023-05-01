@@ -35,11 +35,11 @@ module.exports = {
                     result =  result + (Math.floor(Math.random() * interaction.options.get("value").value) + 1);
                 }
             }
-            RSVPManagement.RSVP(interaction, 2, 1, result);
+            RSVPManagement.RSVP(interaction, "DiceOf", 1, result);
             return 0;
         }
         catch(err) {
-            errorManagement.writeErrorMsg(interaction, 1, err);
+            errorManagement.writeErrorMsg(interaction, "errorDuringExecution", err);
             return 1;
         }
     },

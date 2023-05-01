@@ -18,7 +18,7 @@ module.exports = {
       interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId
     ) {
       return void interaction.reply({
-        content: 'You are not in my voice channel!',
+        content: 'You are not in my voice channel',
         ephemeral: true,
       });
     }

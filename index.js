@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
 const {initCommands, musicCommandsList, initPlayer, initRoles} = require('./tools/initManagement')
+const {RSVP} = require('./tools/responseManagement')
 const {Player} = require('discord-player');
 
 let listAlreadyInit = [];
@@ -37,7 +38,7 @@ bot.on("messageCreate", async msg => {
         initCommands(bot, guildId);
         initRoles(bot, guildId);
         listAlreadyInit.push(guildId);
-        msg.reply({ content: 'Eifield initialised.', ephemeral: true })
+        RSVP(msg, "botInitialised", 0); //It's a msg but it is ok
     }
 })
 
@@ -56,7 +57,7 @@ bot.on('interactionCreate', async interaction => {
 		    command.execute(interaction);
 	} catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        RSVP(interaction, "errorDuringExecution", 0);
 	}
 });
 

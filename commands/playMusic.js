@@ -2,6 +2,7 @@ const {GuildMember, ApplicationCommandOptionType } = require('discord.js');
 const {QueryType} = require('discord-player');
 const errorManagement = require('./../tools/errorManagement');
 const RSVPManagement = require('./../tools/responseManagement');
+const { RSVP } = require('./../tools/responseManagement');
 
 module.exports = {
   data: {
@@ -30,7 +31,7 @@ module.exports = {
         })
         .catch(() => {});
       if (!searchResult || !searchResult.tracks.length)
-        return void interaction.followUp({content: 'No results were found!'});
+        return void RSVP(interaction, noResultFound, 2);
 
       const queue = await player.createQueue(interaction.guild, {
         ytdlOptions: {
@@ -46,21 +47,14 @@ module.exports = {
         if (!queue.connection) await queue.connect(interaction.member.voice.channel);
       } catch {
         void player.deleteQueue(interaction.guildId);
-        return void interaction.followUp({
-          content: 'Could not join your voice channel!',
-        });
+        return void RSVP(interaction, cantJoinVoiceChannel, 2);
       }
 
-      await interaction.followUp({
-        content: `⏱ | Loading your ${searchResult.playlist ? 'playlist' : 'track'}...`,
-      });
+      await RSVP(interaction, cantJoinVoiceChannel, 2);
       searchResult.playlist ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
       if (!queue.playing) await queue.play();
     } catch (error) {
-      console.log(error);
-      interaction.followUp({
-        content: 'There was an error trying to execute that command: ' + error.message,
-      });
+      RSVP(interaction, SomethingWentWrong, 2);
     }
   },
 };

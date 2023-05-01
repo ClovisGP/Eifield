@@ -1,0 +1,17 @@
+{
+    "botInisialised": "Eifield initialisé.",
+    "errorDuringExecution": "Il y a eu une erreur pendant l'execution de la commande.",
+    "SomethingWentWrong": "Une erreur c'est produite",
+    "EifieldController": "Un role permettant d'utiliser les commandes dangereuses d'Eifeild",
+    "messageRemoved": "Les messages ont été supprimé",
+    "DiceOf": "Dés de ",
+    "Paused": "⏸ | En pause",
+    "noResultFound": "Aucun résultat n'a été trouvé.",
+    "cantJoinVoiceChannel": "Impossible de rejoindre le channel vocal.",
+    "loadingMusic": "⏱ | Chargement",
+    "notInVoiceChannel": "Vous n'êtes dans aucun channel vocal.",
+    "nocurrentMusicPlayed": "❌ | No music is being played!",
+    "resume": "▶ | Reprise",
+    "currentMusicPlayed": "La chanson joué est actuellement 🎶 | ",
+    "playerStopped": "🛑 | Le player a été mis en pause."
+}

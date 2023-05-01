@@ -1,5 +1,5 @@
 const errorManagement = require('./../tools/errorManagement');
-const RSVPManagement = require('./../tools/responseManagement');
+const { RSVP } = require('./../tools/responseManagement');
 
 module.exports = {
     data: {
@@ -16,6 +16,6 @@ module.exports = {
     const success = queue.setPaused(true);
     if (!success)
       return void errorManagement.writeErrorMsg(interaction, 6, "", true);
-    return void RSVPManagement(interaction, 3, 2)
+    return void RSVP(interaction, "Paused", 2)
   },
 };

@@ -1,5 +1,5 @@
 const errorManagement = require('./../tools/errorManagement');
-const RSVPManagement = require('./../tools/responseManagement');
+const { RSVP } = require('./../tools/responseManagement');
 const permManagement = require('./../tools/permissionManagement');
 
 module.exports = {
@@ -26,14 +26,14 @@ module.exports = {
                 interaction.channel.bulkDelete(interaction.options.get("number").value)
                 .then(async messages => {
                     console.log(`Bulk deleted ${messages.size} messages`);
-                    RSVPManagement.RSVP(interaction, 1, 0);
+                    RSVP(interaction, "messageRemoved", 0);
                 })
                 .catch(error => { errorManagement.writeErrorMsg(interaction, 2, error)});
             } else {
                 interaction.channel.bulkDelete(5)
                 .then(async messages => {
                     console.log(`Bulk deleted ${messages.size} messages`);
-                    RSVPManagement.RSVP(interaction, 1, 0);
+                    RSVP(interaction, "messageRemoved", 0);
                 })
                 .catch(error => { errorManagement.writeErrorMsg(interaction, 2, error)});
             }
