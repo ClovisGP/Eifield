@@ -10,7 +10,7 @@ const rest = new REST({ version: '10' }).setToken(config.token);
 const commands = [];
 const musicCommandsList = []
 
-function initCommands(bot) {
+function initCommands(bot, guildId) {
     bot.commands = new Discord.Collection();
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
@@ -20,14 +20,10 @@ function initCommands(bot) {
         if (file.includes("Music"))
         musicCommandsList.push(command.data.name)
     }
-    
-    // rest.put(Discord.Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
-    // .then(() => console.log('Successfully registered application commands.'))
-    // .catch(console.error)
 
-    rest.put(Discord.Routes.applicationCommands(config.clientId), { body: commands },)
+    rest.put(Discord.Routes.applicationGuildCommands(config.clientId, guildId), { body: commands })
     .then(() => console.log('Successfully registered application commands.'))
-    .catch(console.error);
+    .catch(console.error)
     
 }
 
@@ -61,14 +57,14 @@ function initPlayer(player) {
     });
 }
 
-function initRoles(bot) {
-    let guild = bot.guilds.cache.get(config.guildId);
+function initRoles(bot, guildId) {
+    let guild = bot.guilds.cache.get(guildId);
 
     if (!guild.roles.cache.find(x => x.name === "EifieldController"))
     guild.roles.create({
         name: 'EifieldController',
         color: Discord.Colors.DarkNavy,
-        reason: 'A role for access to the remove sommands of Eifeild',
+        reason: 'A role to access the dangerous commands of Eifeild',
     })
 }
 

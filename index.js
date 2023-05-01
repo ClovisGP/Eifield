@@ -3,9 +3,7 @@ const config = require('./config.json');
 const {initCommands, musicCommandsList, initPlayer, initRoles} = require('./tools/initManagement')
 const {Player} = require('discord-player');
 
-let isInit = false;
-
-
+let listAlreadyInit = [];
 //clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr, check les dependance
 const bot = new Discord.Client({
     intents: [
@@ -18,9 +16,9 @@ const bot = new Discord.Client({
     }
 );
 
+const player = new Player(bot);
 
-
-
+initPlayer(player);
 
 /* Bot's lunch */
 bot.once('ready', async () => {
@@ -34,13 +32,11 @@ bot.once('disconnect', async () => {
 });
 
 bot.on("messageCreate", async msg => {
-    if (msg.content == "E-initialisation" && !isInit) {
-        config.guildId = msg.guildId;
-        initCommands(bot);
-        const player = new Player(bot);
-        initPlayer(player);
-        initRoles(bot);
-        isInit = true;
+    if (msg.content == "E-initialisation" && !(listAlreadyInit.includes(msg.guildId))) {
+        let guildId = msg.guildId;
+        initCommands(bot, guildId);
+        initRoles(bot, guildId);
+        listAlreadyInit.push(guildId);
         msg.reply({ content: 'Eifield initialised.', ephemeral: true })
     }
 })
