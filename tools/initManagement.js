@@ -21,9 +21,14 @@ function initCommands(bot) {
         musicCommandsList.push(command.data.name)
     }
     
-    rest.put(Discord.Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
+    // rest.put(Discord.Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
+    // .then(() => console.log('Successfully registered application commands.'))
+    // .catch(console.error)
+
+    rest.put(Discord.Routes.applicationCommands(config.clientId), { body: commands },)
     .then(() => console.log('Successfully registered application commands.'))
-    .catch(console.error)
+    .catch(console.error);
+    
 }
 
 function initPlayer(player) {
