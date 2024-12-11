@@ -1,10 +1,10 @@
+import 'dotenv/config';// To force it execution and loadall var before everythings
+
 import { Client, GatewayIntentBits } from 'discord.js';
 import RSVP from './tools/responseManagement.js';
 import { initCommands, musicCommandsList, initPlayer, initRoles } from './tools/initManagement.js';
 import { Player } from 'discord-player';
-import dotenv from 'dotenv';
 
-dotenv.config();
 
 let listAlreadyInit = [];
 //clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr, try and catch

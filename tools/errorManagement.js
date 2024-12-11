@@ -1,22 +1,10 @@
 import { GuildMember } from 'discord.js';
-
-const ErrorDescription = {
-    1: "Error: An error occurs during the execution of the command.",
-    2: "Error: An error occurs during the erasings of some messages.",
-    3: "Error: you don't have access to this command.",
-    4: "Error: You are not in a voice channel.",
-    5: "Error: You are not in the same voice channel than the Eifield.",
-    6: "❌ | No music is being played.",
-    7: "❌ | Something went wrong.",
-    8: "Error: You are not in the same voice channel than the Eifield.",
-    9: "Error: You are not in the same voice channel than the Eifield.",
-    10: "Error: You are not in the same voice channel than the Eifield.",
-}
+import getTranslation from './languageManagement.js';
 
 /**
  * Reply an error to an interaction
  * @param {{}} interaction The interaction object
- * @param {number} codeError The error code
+ * @param {string} codeError The error code
  * @param {string} errorLog Optional, the text following the message
  * @param {boolean} followUp Optional, is the message a followup or not
  */
@@ -27,11 +15,11 @@ export async function replyErrorToInteraction(
     followUp = false
 ) {
     try {
-        console.error(`Error - replyErrorToInteraction: ${codeError} - ${ErrorDescription[codeError]}${errorLog.length > 0 ? " ".concat(errorLog) : ""}`);
+        console.error(`Error - replyErrorToInteraction: ${codeError} - ${getTranslation(interaction, codeError)}${errorLog.length > 0 ? " ".concat(errorLog) : ""}`);
         if (followUp) {
-            interaction.followUp(ErrorDescription[codeError]);
+            interaction.followUp(getTranslation(interaction, codeError));
         } else {
-            await interaction.reply(ErrorDescription[codeError]);
+            await interaction.reply(getTranslation(interaction, codeError));
             setTimeout(() => interaction.deleteReply(), 30000);
         }
     } catch (error) {
@@ -49,17 +37,17 @@ export function checkVoiceChannelValidity(
 ) {
     try {
         if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-            replyErrorToInteraction(interaction, 4);
+            replyErrorToInteraction(interaction, "notInVoiceChannel");
             return 4;
         }
         if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
-            replyErrorToInteraction(interaction, 5);
+            replyErrorToInteraction(interaction, "notInSameVoiceChannel");
             return 5;
         }
         return 0;
     } catch (error) {
         console.error(`An error was catch in checkVoiceChannelValidity => ${error}`);
-        replyErrorToInteraction(interaction, 1);
+        replyErrorToInteraction(interaction, "errorCommand");
         return 1;
     }
 }

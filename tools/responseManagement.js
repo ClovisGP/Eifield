@@ -1,5 +1,4 @@
-import french from './../languages/fr.json' assert { type: 'json' };
-import english from './../languages/en.json' assert { type: 'json' };
+import getTranslation from "./languageManagement.js";
 
 /**
  * Function to respond to an interaction
@@ -19,17 +18,17 @@ export default async function RSVP(
     try {
         if (replyType == 2) {
             interaction.followUp({
-                content: english[sentenceName] + sentenceEnd,
+                content: getTranslation(interaction, sentenceName) + sentenceEnd,
                 ephemeral: ephemeral
             });
         } else if (replyType == 1) {
             interaction.editReply({
-                content: english[sentenceName] + sentenceEnd,
+                content: getTranslation(interaction, sentenceName) + sentenceEnd,
                 ephemeral: ephemeral
             });
         } else {
             interaction.reply({
-                content: english[sentenceName] + sentenceEnd,
+                content: getTranslation(interaction, sentenceName) + sentenceEnd,
                 ephemeral: ephemeral
             });
         }

@@ -13,5 +13,11 @@
     "nocurrentMusicPlayed": "❌ | No music is being played!",
     "resume": "▶ | Reprise",
     "currentMusicPlayed": "La chanson joué est actuellement 🎶 | ",
-    "playerStopped": "🛑 | Le player a été mis en pause."
+    "playerStopped": "🛑 | Le player a été mis en pause.",
+
+    "errorCommand": "Error: An error occurs during the execution of the command.",
+    "errorDeleteMsg": "Error: An error occurs during the erasings of some messages.",
+    "forbiddenCommand": "You don't have access to this command.",
+    "notInSameVoiceChannel": "You are not in the same voice channel than the Eifield.",
+    "errorUnknow": "❌ | Something went wrong."
 }

@@ -9,7 +9,7 @@ import { replyErrorToInteraction } from './errorManagement.js';
 export function checkRole(interaction, roleName) {
     try {
         if (!interaction.member.roles.cache.find(x => x.name === roleName)) {
-            replyErrorToInteraction(interaction, 3);
+            replyErrorToInteraction(interaction, "forbiddenCommand");
             return false;
         }
         return true;

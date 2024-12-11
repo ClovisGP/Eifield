@@ -38,24 +38,24 @@ export async function execute(interaction) {
         let listArg = [];
         if (interaction.options.get("begin")) {
             if (!Date.parse(interaction.options.get("begin").value)) {
-                replyErrorToInteraction(interaction, 1);
+                replyErrorToInteraction(interaction, "errorCommand");
                 return 5;
             }
             listArg["begin"] = (new Date(interaction.options.get("begin").value).getTime());
         } else {
-            replyErrorToInteraction(interaction, 1);
+            replyErrorToInteraction(interaction, "errorCommand");
             return 5;
         }
         if (interaction.options.get("end")) {
             if (!Date.parse(interaction.options.get("end").value)) {
-                replyErrorToInteraction(interaction, 1);;
+                replyErrorToInteraction(interaction, "errorCommand");;
                 return 6;
             }
             listArg["end"] = (new Date(interaction.options.get("end").value).getTime());
         }
         if (!("end" in listArg)) {
             if (listArg["begin"] >= listArg["end"]) {
-                replyErrorToInteraction(interaction, 1);
+                replyErrorToInteraction(interaction, "errorCommand");
                 return 8;
             }
         }
@@ -92,7 +92,7 @@ export async function execute(interaction) {
                 }
             });
         }
-        RSVP(interaction, "messageRemoved", 1);
+        RSVP(interaction, "messageRemoved", 0);
     }
     catch (err) {
         replyErrorToInteraction(interaction, 1, err);

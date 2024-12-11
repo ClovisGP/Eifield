@@ -3,6 +3,7 @@ import { Collection, Routes, Colors } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 
+
 const __dirname = path.resolve();
 const commandsPath = path.join(__dirname, './commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -20,13 +21,13 @@ export async function initCommands(bot, guildId) {
     try {
         bot.commands = new Collection();
         for (const file of commandFiles) {
-            console.log(path.join(commandsPath, file))
             const filePath = `file://${path.join(commandsPath, file)}`;
             const command = await import(filePath);
 
             bot.commands.set(command.data.name, command);
             commands.push(command.data);
             if (file.includes("Music")) musicCommandsList.push(command.data.name)
+            console.log(`Command file loaded => ${file}`)
         }
         await rest.put(Routes.applicationGuildCommands(process.env.APP_ID, guildId), { body: commands });
         console.log('Successfully registered application commands.');
@@ -50,23 +51,23 @@ export function initPlayer(player) {
             console.log(`[${queue.guild.name}] Error emitted from the connection: ${error.message}`);
         });
 
-        player.on('trackStart', (queue, track) => {
+        player.on('trackStart', (queue, track) => {//Translation
             queue.metadata.send(`▶ | Started playing: **${track.title}** in **${queue.connection.channel.name}**!`);
         });
 
-        player.on('trackAdd', (queue, track) => {
+        player.on('trackAdd', (queue, track) => {//Translation
             queue.metadata.send(`🎶 | Track **${track.title}** queued!`);
         });
 
-        player.on('botDisconnect', queue => {
+        player.on('botDisconnect', queue => {//Translation
             queue.metadata.send('❌ | I was manually disconnected from the voice channel, clearing queue!');
         });
 
-        player.on('channelEmpty', queue => {
+        player.on('channelEmpty', queue => {//Translation
             queue.metadata.send('❌ | Nobody is in the voice channel, leaving...');
         });
 
-        player.on('queueEnd', queue => {
+        player.on('queueEnd', queue => {//Translation
             queue.metadata.send('✅ | Queue finished!');
         });
     } catch (error) {
@@ -88,7 +89,7 @@ export function initRoles(bot, guildId) {
             guild.roles.create({
                 name: 'EifieldController',
                 color: Colors.DarkNavy,
-                reason: 'A role to access the dangerous commands of Eifeild',
+                reason: 'A role to access the dangerous commands of Eifeild',//Translation
             })
     } catch (error) {
         console.error(`An error was catch in initRoles => ${error}`);
