@@ -35,10 +35,9 @@ export async function execute(interaction) {
             }
         }
         RSVP(interaction, "DiceOf", 1, result);
-        return 0;
     }
-    catch (err) {
-        replyErrorToInteraction(interaction, "errorDuringExecution", err);
-        return 1;
+    catch (err) { // We don't care if a error occurs here
+        console.error(`An error was catch in execute - diceManagement => ${err}`)
+        replyErrorToInteraction(interaction, "errorDuringExecution");
     }
 }

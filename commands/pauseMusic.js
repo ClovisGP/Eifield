@@ -6,14 +6,19 @@ export const data = {
 	"description": 'Pause current song.',
 };
 export async function execute(interaction, player) {
-	if (checkVoiceChannelValidity(interaction) != 0)
-		return;
-	await interaction.deferReply();
-	const queue = player.getQueue(interaction.guildId);
-	if (!queue || !queue.playing)
-		return void replyErrorToInteraction(interaction, 6, "", true);
-	const success = queue.setPaused(true);
-	if (!success)
-		return void replyErrorToInteraction(interaction, 6, "", true);
-	return void RSVP(interaction, "Paused", 2);
+	try {
+		if (checkVoiceChannelValidity(interaction) != 0)
+			return;
+		await interaction.deferReply();
+		const queue = player.getQueue(interaction.guildId);
+		if (!queue || !queue.playing)
+			return void replyErrorToInteraction(interaction, "notInSameVoiceChannel", "", true);
+		const success = queue.setPaused(true);
+		if (!success)
+			return void replyErrorToInteraction(interaction, "notInSameVoiceChannel", "", true);
+		return void RSVP(interaction, "playerStopped", 2);
+	} catch (error) { // We don't care if a error occurs here
+        console.error(`An error was catch in execute - pauseMusic => ${err}`)
+        replyErrorToInteraction(interaction, "errorDuringExecution");
+	}
 }
