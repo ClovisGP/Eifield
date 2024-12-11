@@ -1,13 +1,13 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import RSVP from './tools/responseManagement.js';
-import {initCommands, musicCommandsList, initPlayer, initRoles} from './tools/initManagement.js';
-import {Player} from 'discord-player';
+import { initCommands, musicCommandsList, initPlayer, initRoles } from './tools/initManagement.js';
+import { Player } from 'discord-player';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 let listAlreadyInit = [];
-//clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr, check les dependance
+//clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr, try and catch
 const bot = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -16,8 +16,7 @@ const bot = new Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates,
     ]
-    }
-);
+});
 
 const player = new Player(bot);
 
@@ -36,33 +35,36 @@ bot.once('disconnect', async () => {
 
 /* Reception AREA */
 bot.on("messageCreate", async msg => {
-    console.log(msg.content)
-    if (msg.content === "E-initialisation" && !(listAlreadyInit.includes(msg.guildId))) {
-        let guildId = msg.guildId;
-        await initCommands(bot, guildId);
-        initRoles(bot, guildId);
-        listAlreadyInit.push(guildId);
-        RSVP(msg, "botInitialised", 0); //It's a msg but it is ok
+    try {
+        if (msg.content === "E-initialisation" && !(listAlreadyInit.includes(msg.guildId))) {
+            let guildId = msg.guildId;
+            await initCommands(bot, guildId);
+            initRoles(bot, guildId);
+            listAlreadyInit.push(guildId);
+            RSVP(msg, "botInitialised", 0);
+        }
+    } catch (error) {
+        console.error("Error on messageCreate => ", error);
+        RSVP(msg, "errorDuringExecution", 0); // We take the assuption that the msg object is ok
     }
 })
 
-
 bot.on('interactionCreate', async interaction => {
-	if (!interaction.isChatInputCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
+    
+    try {
+        const command = bot.commands.get(interaction.commandName);
+    
+        if (!command) return;
 
-	const command = bot.commands.get(interaction.commandName);
-
-	if (!command) return;
-
-	try {
         if (musicCommandsList.includes(interaction.commandName))
             command.execute(interaction, player);
         else
-		    command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-        RSVP(interaction, "errorDuringExecution", 0);
-	}
+            command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        RSVP(interaction, "errorDuringExecution", 0); // We take the assuption that the interaction object is ok
+    }
 });
 
 bot.on('error', console.error);

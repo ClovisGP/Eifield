@@ -1,4 +1,4 @@
-import { writeErrorMsg } from './../tools/errorManagement.js';
+import { replyErrorToInteraction } from './../tools/errorManagement.js';
 import RSVP from './../tools/responseManagement.js';
 import { checkRole } from './../tools/permissionManagement.js';
 
@@ -38,24 +38,24 @@ export async function execute(interaction) {
         let listArg = [];
         if (interaction.options.get("begin")) {
             if (!Date.parse(interaction.options.get("begin").value)) {
-                writeErrorMsg(interaction, 1);
+                replyErrorToInteraction(interaction, 1);
                 return 5;
             }
             listArg["begin"] = (new Date(interaction.options.get("begin").value).getTime());
         } else {
-            writeErrorMsg(interaction, 1);
+            replyErrorToInteraction(interaction, 1);
             return 5;
         }
         if (interaction.options.get("end")) {
             if (!Date.parse(interaction.options.get("end").value)) {
-                writeErrorMsg(interaction, 1);;
+                replyErrorToInteraction(interaction, 1);;
                 return 6;
             }
             listArg["end"] = (new Date(interaction.options.get("end").value).getTime());
         }
         if (!("end" in listArg)) {
             if (listArg["begin"] >= listArg["end"]) {
-                writeErrorMsg(interaction, 1);
+                replyErrorToInteraction(interaction, 1);
                 return 8;
             }
         }
@@ -95,7 +95,7 @@ export async function execute(interaction) {
         RSVP(interaction, "messageRemoved", 1);
     }
     catch (err) {
-        writeErrorMsg(interaction, 1, err);
+        replyErrorToInteraction(interaction, 1, err);
         return 1;
     }
 }

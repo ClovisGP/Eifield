@@ -1,4 +1,4 @@
-import { writeErrorMsg } from './../tools/errorManagement.js';
+import { replyErrorToInteraction } from './../tools/errorManagement.js';
 import RSVP from './../tools/responseManagement.js';
 import { checkRole } from './../tools/permissionManagement.js';
 
@@ -27,18 +27,18 @@ export async function execute(interaction) {
                     console.log(`Bulk deleted ${messages.size} messages`);
                     RSVP(interaction, "messageRemoved", 0);
                 })
-                .catch(error => { writeErrorMsg(interaction, 2, error); });
+                .catch(error => { replyErrorToInteraction(interaction, 2, error); });
         } else {
             interaction.channel.bulkDelete(5)
                 .then(async (messages) => {
                     console.log(`Bulk deleted ${messages.size} messages`);
                     RSVP(interaction, "messageRemoved", 0);
                 })
-                .catch(error => { writeErrorMsg(interaction, 2, error); });
+                .catch(error => { replyErrorToInteraction(interaction, 2, error); });
         }
     }
     catch (err) {
-        writeErrorMsg(interaction, 1, err);
+        replyErrorToInteraction(interaction, 1, err);
         return 1;
     }
 }

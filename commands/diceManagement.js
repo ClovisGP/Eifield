@@ -1,4 +1,4 @@
-import { writeErrorMsg } from './../tools/errorManagement.js';
+import { replyErrorToInteraction } from './../tools/errorManagement.js';
 import RSVP from './../tools/responseManagement.js';
 
 export const data = {
@@ -38,7 +38,7 @@ export async function execute(interaction) {
         return 0;
     }
     catch (err) {
-        writeErrorMsg(interaction, "errorDuringExecution", err);
+        replyErrorToInteraction(interaction, "errorDuringExecution", err);
         return 1;
     }
 }
