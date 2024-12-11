@@ -10,7 +10,6 @@ import { Player } from 'discord-player';
  */
 let listAlreadyInit = [];// Not really fan of this system
 
-// refaire les reponse des intéraction, revoir le  but pour rm et les acces
 const bot = new Client({
     intents: [
         GatewayIntentBits.Guilds,
