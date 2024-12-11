@@ -13,24 +13,53 @@ const ErrorDescription = {
     10: "Error: You are not in the same voice channel than the Eifield.",
 }
 
-export async function writeErrorMsg(interaction, codeError, errorLog="No Log", followUp=false) { //Beware if we have a replydefer
-    if (followUp) {
-        interaction.followUp(ErrorDescription[codeError]);
-    } else {
-        await interaction.reply(ErrorDescription[codeError]);
-        setTimeout(() => interaction.deleteReply(), 30000);
+/**
+ * Reply an error to an interaction
+ * @param {{}} interaction The interaction object
+ * @param {number} codeError The error code
+ * @param {string} errorLog Optional, the text following the message
+ * @param {boolean} followUp Optional, is the message a followup or not
+ */
+export async function replyErrorToInteraction(
+    interaction,
+    codeError,
+    errorLog = "",
+    followUp = false
+) {
+    try {
+        console.error(`Error - replyErrorToInteraction: ${codeError} - ${ErrorDescription[codeError]}${errorLog.length > 0 ? " ".concat(errorLog) : ""}`);
+        if (followUp) {
+            interaction.followUp(ErrorDescription[codeError]);
+        } else {
+            await interaction.reply(ErrorDescription[codeError]);
+            setTimeout(() => interaction.deleteReply(), 30000);
+        }
+    } catch (error) {
+        console.error(`An error was catch in replyErrorToInteraction => ${error}`);
     }
-    console.log("ERROR : " + codeError + " - " + ErrorDescription[codeError] + "\r" + errorLog)
 }
 
-export function checkVoiceChannelValidity(interaction) {
-    if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-        writeErrorMsg(interaction, 4);
-        return 4;
+/**
+ * Checks the validity of the voice channel
+ * @param {{}} interaction The interaction object
+ * @returns 0 If it is ok or the codeError corresponding to the message sent
+ */
+export function checkVoiceChannelValidity(
+    interaction
+) {
+    try {
+        if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
+            replyErrorToInteraction(interaction, 4);
+            return 4;
+        }
+        if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
+            replyErrorToInteraction(interaction, 5);
+            return 5;
+        }
+        return 0;
+    } catch (error) {
+        console.error(`An error was catch in checkVoiceChannelValidity => ${error}`);
+        replyErrorToInteraction(interaction, 1);
+        return 1;
     }
-    if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
-        writeErrorMsg(interaction, 5);
-        return 5;
-    }
-    return 0;
 }
