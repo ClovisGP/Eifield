@@ -48,7 +48,7 @@ bot.on("messageCreate", async msg => {
         }
     } catch (error) {
         console.error("Error on messageCreate => ", error);
-        RSVP(msg, "errorDuringExecution", 0); // We take the assuption that the msg object is ok
+        RSVP(msg, "errorCommand", 0); // We take the assuption that the msg object is ok
     }
 })
 
@@ -66,7 +66,7 @@ bot.on('interactionCreate', async interaction => {
             command.execute(interaction);
     } catch (error) {
         console.error(error);
-        RSVP(interaction, "errorDuringExecution", 0); // We take the assuption that the interaction object is ok
+        RSVP(interaction, "errorCommand", 0); // We take the assuption that the interaction object is ok
     }
 });
 

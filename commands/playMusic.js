@@ -54,6 +54,6 @@ export async function execute(interaction, player) {
 		if (!queue.playing) await queue.play();
 	} catch (error) {// We don't care if a error occurs here
 		 console.error(`An error was catch in execute - playMusic => ${error}`)
-		 replyErrorToInteraction(interaction, "errorDuringExecution");
+		 replyErrorToInteraction(interaction, "errorCommand");
 	}
 }

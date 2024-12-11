@@ -19,6 +19,6 @@ export async function execute(interaction, player) {
 		return void RSVP(interaction, "playerStopped", 2);
 	} catch (error) { // We don't care if a error occurs here
         console.error(`An error was catch in execute - pauseMusic => ${err}`)
-        replyErrorToInteraction(interaction, "errorDuringExecution");
+        replyErrorToInteraction(interaction, "errorCommand");
 	}
 }

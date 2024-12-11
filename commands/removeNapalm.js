@@ -43,6 +43,6 @@ export async function execute(interaction) {
     }
     catch (err) {// We don't care if a error occurs here
         console.error(`An error was catch in execute - removeNapalm => ${err}`)
-        replyErrorToInteraction(interaction, "errorDuringExecution");
+        replyErrorToInteraction(interaction, "errorCommand");
     }
 }
