@@ -33,30 +33,34 @@ export const data = {
 };
 export async function execute(interaction) {
     try {
-        if (!checkRole(interaction, "EifieldController")) return 3;
+        if (!checkRole(interaction, "EifieldController")) {
+            console.error(`Forbidden access to execute - removeNapalm`);
+            replyErrorToInteraction(interaction, "forbiddenCommand"); 
+            return;
+        }
         await interaction.deferReply();
         let listArg = [];
         if (interaction.options.get("begin")) {
             if (!Date.parse(interaction.options.get("begin").value)) {
                 replyErrorToInteraction(interaction, "errorCommand");
-                return 5;
+                return;
             }
             listArg["begin"] = (new Date(interaction.options.get("begin").value).getTime());
         } else {
             replyErrorToInteraction(interaction, "errorCommand");
-            return 5;
+            return;
         }
         if (interaction.options.get("end")) {
             if (!Date.parse(interaction.options.get("end").value)) {
                 replyErrorToInteraction(interaction, "errorCommand");;
-                return 6;
+                return;
             }
             listArg["end"] = (new Date(interaction.options.get("end").value).getTime());
         }
         if (!("end" in listArg)) {
             if (listArg["begin"] >= listArg["end"]) {
                 replyErrorToInteraction(interaction, "errorCommand");
-                return 8;
+                return;
             }
         }
         if (interaction.options.get("name")) {
@@ -94,8 +98,8 @@ export async function execute(interaction) {
         }
         RSVP(interaction, "messageRemoved", 0);
     }
-    catch (err) {
-        replyErrorToInteraction(interaction, 1, err);
-        return 1;
+    catch (err) {// We don't care if a error occurs here
+        console.error(`An error was catch in execute - removeTactically => ${err}`)
+        replyErrorToInteraction(interaction, "errorCommand");
     }
 }
