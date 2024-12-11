@@ -22,7 +22,7 @@ export async function execute(interaction, player) {
 				{
 					title: getTranslation(interaction, 'nowPlaying'),
 					description: trimString(
-						`${getTranslation(interaction, 'currentMusicPlayed')} ${queue.current.title} \n ${queue} `,
+						`${getTranslation(interaction, 'currentMusicPlayed')} ${queue.current.title}.\n ${queue} `,
 						4095),
 				},
 			],
