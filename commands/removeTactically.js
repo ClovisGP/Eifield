@@ -96,7 +96,7 @@ export async function execute(interaction) {
                 }
             });
         }
-        RSVP(interaction, "messageRemoved", 0);
+        RSVP(interaction, "messageRemoved", 0, "", true);
     }
     catch (err) {// We don't care if a error occurs here
         console.error(`An error was catch in execute - removeTactically => ${err}`)

@@ -29,14 +29,14 @@ export async function execute(interaction) {
             interaction.channel.bulkDelete(interaction.options.get("number").value)
                 .then(async (messages) => {
                     console.log(`Bulk deleted ${messages.size} messages`);
-                    RSVP(interaction, "messageRemoved", 0);
+                    RSVP(interaction, "messageRemoved", 0, "", true);
                 })
                 .catch(error => { console.error(`Error for bulkDelete in execute - removeNapalm => ${error}`); replyErrorToInteraction(interaction, "errorDeleteMsg"); });
         } else {
             interaction.channel.bulkDelete(5)
                 .then(async (messages) => {
                     console.log(`Bulk deleted ${messages.size} messages`);
-                    RSVP(interaction, "messageRemoved", 0);
+                    RSVP(interaction, "messageRemoved", 0, "", true);
                 })
                 .catch(error => { console.error(`Error for bulkDelete in execute - removeNapalm => ${error}`); replyErrorToInteraction(interaction, "errorDeleteMsg"); });
         }

@@ -5,9 +5,12 @@ import RSVP from './tools/responseManagement.js';
 import { initCommands, musicCommandsList, initPlayer, initRoles } from './tools/initManagement.js';
 import { Player } from 'discord-player';
 
+/**
+ * Contains the list of the already init server / guild
+ */
+let listAlreadyInit = [];// Not really fan of this system
 
-let listAlreadyInit = [];
-//clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr, try and catch
+// refaire les reponse des intéraction, revoir le  but pour rm et les acces
 const bot = new Client({
     intents: [
         GatewayIntentBits.Guilds,
