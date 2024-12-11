@@ -1,4 +1,4 @@
-const {GuildMember} = require('discord.js');
+import { GuildMember } from 'discord.js';
 
 const ErrorDescription = {
     1: "Error: An error occurs during the execution of the command.",
@@ -13,7 +13,7 @@ const ErrorDescription = {
     10: "Error: You are not in the same voice channel than the Eifield.",
 }
 
-async function writeErrorMsg(interaction, codeError, errorLog="No Log", followUp=false) { //Beware if we have a replydefer
+export async function writeErrorMsg(interaction, codeError, errorLog="No Log", followUp=false) { //Beware if we have a replydefer
     if (followUp) {
         interaction.followUp(ErrorDescription[codeError]);
     } else {
@@ -23,7 +23,7 @@ async function writeErrorMsg(interaction, codeError, errorLog="No Log", followUp
     console.log("ERROR : " + codeError + " - " + ErrorDescription[codeError] + "\r" + errorLog)
 }
 
-function checkVoiceChannelValidity(interaction) {
+export function checkVoiceChannelValidity(interaction) {
     if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
         writeErrorMsg(interaction, 4);
         return 4;
@@ -34,8 +34,3 @@ function checkVoiceChannelValidity(interaction) {
     }
     return 0;
 }
-
-module.exports = {
-    writeErrorMsg,
-    checkVoiceChannelValidity,
-};

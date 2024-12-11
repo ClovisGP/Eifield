@@ -1,18 +1,20 @@
-const Discord = require('discord.js');
-const config = require('./config.json');
-const {initCommands, musicCommandsList, initPlayer, initRoles} = require('./tools/initManagement')
-const {RSVP} = require('./tools/responseManagement')
-const {Player} = require('discord-player');
+import { Client, GatewayIntentBits } from 'discord.js';
+import RSVP from './tools/responseManagement.js';
+import {initCommands, musicCommandsList, initPlayer, initRoles} from './tools/initManagement.js';
+import {Player} from 'discord-player';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let listAlreadyInit = [];
 //clear le code, refaire les reponse des intéraction, revoir le  but pour rm et les acces, voir pour mettre un mode fr, check les dependance
-const bot = new Discord.Client({
+const bot = new Client({
     intents: [
-        Discord.GatewayIntentBits.Guilds,
-        Discord.GatewayIntentBits.GuildMessages,
-        Discord.GatewayIntentBits.MessageContent,
-        Discord.GatewayIntentBits.GuildMembers,
-        Discord.GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildVoiceStates,
     ]
     }
 );
@@ -21,21 +23,23 @@ const player = new Player(bot);
 
 initPlayer(player);
 
-/* Bot's lunch */
+/* Bot's launch AREA*/
 bot.once('ready', async () => {
     console.log("Bot ready");
 });
 bot.once('reconnecting', async () => {
-    console.log('Reconnecting!');
+    console.log('Reconnecting');
 });
 bot.once('disconnect', async () => {
-    console.log('Disconnect!');
+    console.log('Disconnect');
 });
 
+/* Reception AREA */
 bot.on("messageCreate", async msg => {
-    if (msg.content == "E-initialisation" && !(listAlreadyInit.includes(msg.guildId))) {
+    console.log(msg.content)
+    if (msg.content === "E-initialisation" && !(listAlreadyInit.includes(msg.guildId))) {
         let guildId = msg.guildId;
-        initCommands(bot, guildId);
+        await initCommands(bot, guildId);
         initRoles(bot, guildId);
         listAlreadyInit.push(guildId);
         RSVP(msg, "botInitialised", 0); //It's a msg but it is ok
@@ -62,4 +66,4 @@ bot.on('interactionCreate', async interaction => {
 });
 
 bot.on('error', console.error);
-bot.login(config.token);
+bot.login(process.env.BOT_TOKEN);
