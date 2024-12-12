@@ -7,9 +7,9 @@ export const data = {
 };
 export async function execute(interaction, player) {
 	try {
+		await interaction.deferReply();
 		if (checkVoiceChannelValidity(interaction) != 0)
 			return;
-		await interaction.deferReply();
 		const queue = player.getQueue(interaction.guildId);
 		if (!queue || !queue.playing)
 			return void replyErrorToInteraction(interaction, "notInSameVoiceChannel", "", true);

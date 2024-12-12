@@ -60,7 +60,7 @@ bot.on('interactionCreate', async interaction => {
         if (!command) return;
 
         if (musicCommandsList.includes(interaction.commandName))
-            command.execute(interaction, player);
+            command.execute(interaction);
         else
             command.execute(interaction);
     } catch (error) {

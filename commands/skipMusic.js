@@ -7,11 +7,10 @@ export const data = {
 	"description": 'Skip a song!',
 };
 export async function execute(interaction, player) {
-	if (checkVoiceChannelValidity(interaction) != 0)
-		return;
-
-	await interaction.deferReply();
 	try {
+		await interaction.deferReply();
+		if (checkVoiceChannelValidity(interaction) != 0)
+			return;
 		const queue = player.getQueue(interaction.guildId);
 		if (!queue || !queue.playing)
 			return void replyErrorToInteraction(interaction, 'nocurrentMusicPlayed', "", true);

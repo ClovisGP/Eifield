@@ -9,6 +9,7 @@ export const data = {
 
 export async function execute(interaction, player) {
 	try {
+		await interaction.deferReply();
 		if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
 			return void replyErrorToInteraction(interaction, "notInVoiceChannel", "", true);
 		}
@@ -18,7 +19,6 @@ export async function execute(interaction, player) {
 			return void replyErrorToInteraction(interaction, "notInVoiceChannel", "", true);
 		}
 
-		await interaction.deferReply();
 		const queue = player.getQueue(interaction.guildId);
 		if (!queue || !queue.playing)
 			return void replyErrorToInteraction(interaction, "nocurrentMusicPlayed", "", true);

@@ -1,8 +1,9 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { QueryType } from 'discord-player';
+import { QueryType, useMainPlayer } from 'discord-player';
 import { checkVoiceChannelValidity } from './../tools/errorManagement.js';
 import RSVP from './../tools/responseManagement.js';
 import { replyErrorToInteraction } from './../tools/errorManagement.js';
+import ytdl from 'ytdl-core';
 
 export const data = {
 	"name": "play",
@@ -16,21 +17,35 @@ export const data = {
 		},
 	],
 };
-export async function execute(interaction, player) {
+export async function execute(interaction) {
 	try {
+		await interaction.deferReply();
+
 		if (checkVoiceChannelValidity(interaction) != 0)
 			return;
-
-		await interaction.deferReply();
-		const url = interaction.options.getString('url');
-		const searchResult = await player
-			.search(url, {
-				requestedBy: interaction.user,
-				searchEngine: QueryType.AUTO,
-			})
-			.catch(() => { });
-		if (!searchResult || !searchResult.tracks.length)
-			return void replyErrorToInteraction(interaction, "noResultFound", "", true);
+		const url = interaction.options.getString('url', true);
+		let isYtUrl = false;
+		const player = useMainPlayer();
+		let searchResult = null;
+		if (ytdl.validateURL(url)) { // YT
+			isYtUrl = true;
+			try {
+				const info = await ytdl.getInfo(url);
+				const audioFormat = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
+				if (!audioFormat)
+					return void replyErrorToInteraction(interaction, "noResultFound", "", true);
+			} catch (error) { // Yes it is a lie
+				return void replyErrorToInteraction(interaction, "noResultFound", "", true);
+			}
+		} else {
+			isYtUrl = false;
+			searchResult = await player
+				.search(url, {
+					requestedBy: interaction.user,
+				})
+			if (!searchResult || !searchResult.hasTracks())
+				return void replyErrorToInteraction(interaction, "noResultFound", "", true);
+		}
 
 		const queue = await player.createQueue(interaction.guild, {
 			ytdlOptions: {
@@ -50,8 +65,12 @@ export async function execute(interaction, player) {
 			return void replyErrorToInteraction(interaction, "cantJoinVoiceChannel", "", true);
 		}
 
-		await RSVP(interaction, cantJoinVoiceChannel, 2);
-		searchResult.playlist ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
+		await RSVP(interaction, "cantJoinVoiceChannel", 2);
+		if (isYtUrl){
+			queue.addTracks(ytdl(url, { filter: 'audioonly' }));
+		} else {
+			searchResult.hasPlaylist() ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
+		}
 		if (!queue.playing) await queue.play();
 	} catch (error) {// We don't care if a error occurs here
 		console.error(`An error was catch in execute - playMusic => ${error}`)
