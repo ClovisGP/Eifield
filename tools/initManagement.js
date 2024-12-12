@@ -19,6 +19,7 @@ export const musicCommandsList = []
  */
 export async function initCommands(bot, guildId) {
     try {
+        await rest.put(Routes.applicationGuildCommands(process.env.APP_ID, guildId), { body: [] }); // The the old command
         bot.commands = new Collection();
         for (const file of commandFiles) {
             const filePath = `file://${path.join(commandsPath, file)}`;

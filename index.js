@@ -38,7 +38,7 @@ bot.once('disconnect', async () => {
 /* Reception AREA */
 bot.on("messageCreate", async msg => {
     try {
-        if (msg.content === "E-initialisation" && !(listAlreadyInit.includes(msg.guildId))) {
+        if (msg.content === "E-initialization" && !(listAlreadyInit.includes(msg.guildId))) {
             let guildId = msg.guildId;
             await initCommands(bot, guildId);
             initRoles(bot, guildId);
