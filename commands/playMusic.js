@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { QueryType } from 'discord-player';
 import { checkVoiceChannelValidity } from './../tools/errorManagement.js';
 import RSVP from './../tools/responseManagement.js';
+import { replyErrorToInteraction } from './../tools/errorManagement.js';
 
 export const data = {
 	"name": "play",
@@ -29,7 +30,7 @@ export async function execute(interaction, player) {
 			})
 			.catch(() => { });
 		if (!searchResult || !searchResult.tracks.length)
-		return void replyErrorToInteraction(interaction, "noResultFound");
+			return void replyErrorToInteraction(interaction, "noResultFound", "", true);
 
 		const queue = await player.createQueue(interaction.guild, {
 			ytdlOptions: {
@@ -46,14 +47,14 @@ export async function execute(interaction, player) {
 		} catch (err) {
 			console.error(`An error was catch for the queue.connect in execute - playMusic => ${err}`)
 			void player.deleteQueue(interaction.guildId);
-			return void replyErrorToInteraction(interaction, "cantJoinVoiceChannel");
+			return void replyErrorToInteraction(interaction, "cantJoinVoiceChannel", "", true);
 		}
 
 		await RSVP(interaction, cantJoinVoiceChannel, 2);
 		searchResult.playlist ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
 		if (!queue.playing) await queue.play();
 	} catch (error) {// We don't care if a error occurs here
-		 console.error(`An error was catch in execute - playMusic => ${error}`)
-		 replyErrorToInteraction(interaction, "errorCommand");
+		console.error(`An error was catch in execute - playMusic => ${error}`)
+		replyErrorToInteraction(interaction, "errorCommand", "", true);
 	}
 }

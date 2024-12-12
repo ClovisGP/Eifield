@@ -15,7 +15,7 @@ export async function replyErrorToInteraction(
     followUp = false
 ) {
     try {
-        console.error(`Error - replyErrorToInteraction: ${codeError} - ${getTranslation(interaction, codeError)}${errorLog.length > 0 ? " ".concat(errorLog) : ""}`);
+        console.error(`Error printed by replyErrorToInteraction: ${codeError} - ${getTranslation(interaction, codeError)}${errorLog.length > 0 ? " ".concat(errorLog) : ""}`);
         if (followUp) {
             interaction.followUp(getTranslation(interaction, codeError));
         } else {
@@ -37,17 +37,17 @@ export function checkVoiceChannelValidity(
 ) {
     try {
         if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-            replyErrorToInteraction(interaction, "notInVoiceChannel");
+            replyErrorToInteraction(interaction, "notInVoiceChannel", "", true);
             return 4;
         }
         if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
-            replyErrorToInteraction(interaction, "notInSameVoiceChannel");
+            replyErrorToInteraction(interaction, "notInSameVoiceChannel", "", true);
             return 5;
         }
         return 0;
     } catch (error) {
         console.error(`An error was catch in checkVoiceChannelValidity => ${error}`);
-        replyErrorToInteraction(interaction, "errorCommand");
+        replyErrorToInteraction(interaction, "errorCommand", "", true);
         return 1;
     }
 }

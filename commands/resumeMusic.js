@@ -21,11 +21,11 @@ export async function execute(interaction, player) {
 		await interaction.deferReply();
 		const queue = player.getQueue(interaction.guildId);
 		if (!queue || !queue.playing)
-			return void replyErrorToInteraction(interaction, "nocurrentMusicPlayed");
+			return void replyErrorToInteraction(interaction, "nocurrentMusicPlayed", "", true);
 		const success = queue.setPaused(false);
 		return void RSVP(interaction, success ? 'resume' : 'errorUnknow', 2);
 	} catch (error) {// We don't care if a error occurs here
 		console.error(`An error was catch in execute - resumeMusic => ${error}`)
-		replyErrorToInteraction(interaction, "errorCommand");
+		replyErrorToInteraction(interaction, "errorCommand", "", true);
 	}
 }

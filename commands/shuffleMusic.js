@@ -14,7 +14,7 @@ export async function execute(interaction, player) {
 	try {
 		const queue = player.getQueue(interaction.guildId);
 		if (!queue || !queue.playing)
-			return void replyErrorToInteraction(interaction, 'nocurrentMusicPlayed');
+			return void replyErrorToInteraction(interaction, 'nocurrentMusicPlayed', "", true);
 		queue.shuffle();
 		trimString = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
 		return void interaction.followUp({
@@ -29,6 +29,6 @@ export async function execute(interaction, player) {
 		});
 	} catch (error) {// We don't care if a error occurs here
 		console.error(`An error was catch in execute - shuffleMusic => ${error}`)
-		replyErrorToInteraction(interaction, "errorCommand");
+		replyErrorToInteraction(interaction, "errorCommand", "", true);
 	}
 }

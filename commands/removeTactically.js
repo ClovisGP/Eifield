@@ -35,31 +35,31 @@ export async function execute(interaction) {
     try {
         if (!checkRole(interaction, "EifieldController")) {
             console.error(`Forbidden access to execute - removeNapalm`);
-            replyErrorToInteraction(interaction, "forbiddenCommand"); 
+            replyErrorToInteraction(interaction, "forbiddenCommand", "", true); 
             return;
         }
         await interaction.deferReply();
         let listArg = [];
         if (interaction.options.get("begin")) {
             if (!Date.parse(interaction.options.get("begin").value)) {
-                replyErrorToInteraction(interaction, "errorCommand");
+                replyErrorToInteraction(interaction, "errorCommand", "", true);
                 return;
             }
             listArg["begin"] = (new Date(interaction.options.get("begin").value).getTime());
         } else {
-            replyErrorToInteraction(interaction, "errorCommand");
+            replyErrorToInteraction(interaction, "errorCommand", "", true);
             return;
         }
         if (interaction.options.get("end")) {
             if (!Date.parse(interaction.options.get("end").value)) {
-                replyErrorToInteraction(interaction, "errorCommand");;
+                replyErrorToInteraction(interaction, "errorCommand", "", true);
                 return;
             }
             listArg["end"] = (new Date(interaction.options.get("end").value).getTime());
         }
         if (!("end" in listArg)) {
             if (listArg["begin"] >= listArg["end"]) {
-                replyErrorToInteraction(interaction, "errorCommand");
+                replyErrorToInteraction(interaction, "errorCommand", "", true);
                 return;
             }
         }
@@ -100,6 +100,6 @@ export async function execute(interaction) {
     }
     catch (err) {// We don't care if a error occurs here
         console.error(`An error was catch in execute - removeTactically => ${err}`)
-        replyErrorToInteraction(interaction, "errorCommand");
+        replyErrorToInteraction(interaction, "errorCommand", "", true);
     }
 }

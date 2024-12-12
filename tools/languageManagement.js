@@ -24,7 +24,7 @@ export default function getTranslation(
             return english[key];
         }
     } catch (error) {
-        console.error(`An error was catch in replyErrorToInteraction => ${error}`);
+        console.error(`An error was catch in getTranslation => ${error}`);
         return 'TRANSLATION ERROR';
     }
 }

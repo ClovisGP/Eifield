@@ -21,7 +21,7 @@ export async function execute(interaction) {
     try {
         if (!checkRole(interaction, "EifieldController")) {
             console.error(`Forbidden access to execute - removeNapalm`);
-            replyErrorToInteraction(interaction, "forbiddenCommand"); 
+            replyErrorToInteraction(interaction, "forbiddenCommand", "", true); 
             return;
         }
         //await interaction.deferReply(); // if we enable it we can't reply, but it refuse to editReply because "don't have reply"
@@ -31,18 +31,18 @@ export async function execute(interaction) {
                     console.log(`Bulk deleted ${messages.size} messages`);
                     RSVP(interaction, "messageRemoved", 0, "", true);
                 })
-                .catch(error => { console.error(`Error for bulkDelete in execute - removeNapalm => ${error}`); replyErrorToInteraction(interaction, "errorDeleteMsg"); });
+                .catch(error => { console.error(`Error for bulkDelete in execute - removeNapalm => ${error}`); replyErrorToInteraction(interaction, "errorDeleteMsg", "", true); });
         } else {
             interaction.channel.bulkDelete(5)
                 .then(async (messages) => {
                     console.log(`Bulk deleted ${messages.size} messages`);
                     RSVP(interaction, "messageRemoved", 0, "", true);
                 })
-                .catch(error => { console.error(`Error for bulkDelete in execute - removeNapalm => ${error}`); replyErrorToInteraction(interaction, "errorDeleteMsg"); });
+                .catch(error => { console.error(`Error for bulkDelete in execute - removeNapalm => ${error}`); replyErrorToInteraction(interaction, "errorDeleteMsg", "", true); });
         }
     }
     catch (err) {// We don't care if a error occurs here
         console.error(`An error was catch in execute - removeNapalm => ${err}`)
-        replyErrorToInteraction(interaction, "errorCommand");
+        replyErrorToInteraction(interaction, "errorCommand", "", true);
     }
 }
