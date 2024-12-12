@@ -16,7 +16,7 @@ export default function getTranslation(
             ? data.locale
             : data.guildLocale
                 ? data.guildLocale
-                : "en-us";
+                : "en-US";
 
         if (keyToCompare.toLocaleLowerCase() === 'fr') {
             return french[key];

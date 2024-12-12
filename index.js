@@ -65,7 +65,7 @@ bot.on('interactionCreate', async interaction => {
             command.execute(interaction);
     } catch (error) {
         console.error(error);
-        RSVP(interaction, "errorCommand", 0); // We take the assuption that the interaction object is ok
+        RSVP(interaction, "errorCommand", 1); // We take the assuption that the interaction object is ok
     }
 });
 

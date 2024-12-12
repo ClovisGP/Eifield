@@ -1,5 +1,5 @@
 {
-    "botInisialised": "Eifield initialisé avec succès.",
+    "botInitialised": "Eifield initialisé avec succès.",
     "EifieldController": "Un role permettant d'utiliser les commandes dangereuses d'Eifeild",
     "messageRemoved": "Les messages ont été supprimé avec succès.",
     "DiceOf": "🎲 Dés de ",
